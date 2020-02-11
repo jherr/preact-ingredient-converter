@@ -4,9 +4,12 @@ import { useState } from 'preact/hooks';
 const conversions = {
   Flour: 4.25,
   Sugar: 7,
+  'Brown Sugar': 7.5,
   'Chocolate Chips': 6,
   Cocoa: 3,
   Raisins: 5.5,
+  Walnuts: 4,
+  
 };
 
 const App = () => {
