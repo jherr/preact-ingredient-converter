@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { useState } from 'preact/hooks';
+import { useReducer } from 'preact/hooks';
 
 const conversions = {
   Flour: 4.25,
@@ -9,38 +9,50 @@ const conversions = {
   Cocoa: 3,
   Raisins: 5.5,
   Walnuts: 4,
-  
+
 };
 
 const App = () => {
-  const [cups, setCups] = useState(1);
-  const [ingredient, setIngredient] = useState('Flour');
+  const [state,dispatch] = useReducer((state, action) => {
+    switch(action) {
+      case 'setIngredient':
+        return {
+          ...state,
+          ingredient: action.payload,
+        };
+      case 'setCups':
+        return {
+          ...state,
+          cups: action.payload,
+        };
+     }
+  });
 
-  const ounces = cups * conversions[ingredient];
+  const ounces = state.cups * conversions[state.ingredient];
   const pounds = Math.floor(ounces / 16);
   const conversionText = ounces > 16 ?
     `${pounds} Lbs ${ounces - (pounds * 16)} Oz` : `${ounces} Oz`;
 
   return (
-    <div className="mui-container">
-      <div className="mui-row">
-        <div className="mui-col-md-6">
-          <form className="mui-form">
-            <div className="mui-textfield">
+    <div class="mui-container">
+      <div class="mui-row">
+        <div class="mui-col-md-6">
+          <form class="mui-form">
+            <div class="mui-textfield">
               <input
-                onInput={e => setCups(e.target.value)}
-                value={cups}
+                onInput={e => dispatch('setCups', { payload: e.target.value })}
+                value={state.cups}
               />
               <label>Cups</label>
             </div>
-            <div className="mui-select">
+            <div class="mui-select">
               <select
-                onInput={e => setIngredient(e.target.value)}
+                onInput={e => dispatch('setIngredient', { payload: e.target.value })}
               >
                 {Object.keys(conversions).map(k => (
                   <option
                     value={k}
-                    selected={ingredient === k}
+                    selected={state.ingredient === k}
                     key={k}
                   >
                     {k}
@@ -51,12 +63,12 @@ const App = () => {
             </div>
           </form>
         </div>
-        <div className="mui-col-md-6">
-          <div className="mui--text-display2">
+        <div class="mui-col-md-6">
+          <div class="mui--text-display2">
             Conversion
           </div>
           <div
-            className="mui--text-dark mui--text-display3"
+            class="mui--text-dark mui--text-display3"
             style={{ marginTop: '0.5em', fontWeight: 'bold' }}
           >
             {conversionText}
